@@ -1,9 +1,14 @@
+import uuid
+
+from django.contrib.auth.models import User
 from django.db import models
 
-from ehop.apps.carts.models import Cart
-from ehop.apps.userprofiles.models import UserProfile
-from ehop.apps.shipments.models import Shipment
-from ehop.apps.payments.models import Payment
+
+# temporary commented, waiting for other models
+#
+# from ehop.apps.carts.models import Cart
+# from ehop.apps.shipments.models import Shipment
+# from ehop.apps.payments.models import Payment
 
 
 class Order(models.Model):
@@ -39,13 +44,16 @@ class Order(models.Model):
         (REFUNDED, "Refunded"),
 
     ]
-    user = models.ForeignKey(UserProfile, on_delete=models.SET_NULL)
-    cart_items = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    shipments_info = models.ForeignKey(Shipment, on_delete=models.CASCADE)
-    payment_info = models.ForeignKey(Payment, on_delete=models.CASCADE)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    # temporary commented, waiting for other models
+    #
+    # cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    # shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE)
+    # payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    order_status = models.CharField(max_length=15, choices=ORDER_STATUS_CHOICE, default=AWAITING_PAYMENT)
+    order_status = models.CharField(max_length=25, choices=ORDER_STATUS_CHOICE, default=AWAITING_PAYMENT)
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
-        return f'Order #{self.id} by {self.user}.'
-
+        return f'Order #{self.public_id} by {self.user}.'
