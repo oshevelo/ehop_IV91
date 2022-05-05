@@ -6,9 +6,10 @@ from django.db import models
 
 # temporary commented, waiting for other models
 #
-# from ehop.apps.carts.models import Cart
-# from ehop.apps.shipments.models import Shipment
-# from ehop.apps.payments.models import Payment
+# from apps.carts.models import Cart
+# from apps.shipments.models import Shipment
+# from apps.payments.models import Payment
+# from apps.products.models import Product
 
 
 class Order(models.Model):
@@ -56,4 +57,16 @@ class Order(models.Model):
     public_id = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
-        return f'Order #{self.public_id} by {self.user}.'
+        return f'Order #{self.public_id} by {self.user}. Status : {self.order_status}.'
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
+    # temporary commented, waiting for Product model
+    #
+    # product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        # add {} to self.product.name when Product model will be created
+        return f'self.product.name - {self.quantity} items.'
